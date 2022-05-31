@@ -1,0 +1,6 @@
+[requires]
+poco/1.11.2
+sfml/2.5.1
+
+[generators]
+CMakeDeps
