@@ -1,7 +1,6 @@
-﻿#include <core/core.hpp>
+﻿#include <core/engine.hpp>
 
-int main(int, char**)
+int main(int argc, char** argv)
 {
-	core core;
-	return core.run();
+	return core::engine::exec(argc, argv);
 }

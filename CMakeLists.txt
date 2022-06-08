@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.16)
 project(sfml_ui VERSION 0.1.0)
 
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build/modules)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/modules)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
