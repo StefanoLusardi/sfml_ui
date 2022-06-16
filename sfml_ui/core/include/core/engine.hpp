@@ -29,8 +29,8 @@ public:
 	int run(int argc, char** argv);
 
 private:
-	std::map<std::string, std::shared_ptr<base_module>> _modules;
     std::shared_ptr<ui::window_manager_interface> _ui;
+	std::map<std::string, std::shared_ptr<base_module>> _modules;
 };
 
 }

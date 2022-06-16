@@ -12,10 +12,6 @@ class layer_rect : public layer_interface
 public:
     explicit layer_rect();
     void update(const std::vector<rect_t<float>>& rect_list);
-    void draw(const std::shared_ptr<sf::RenderWindow>& window) override;
-
-private:
-    std::vector<sf::RectangleShape> _rects;
 };
 
 }

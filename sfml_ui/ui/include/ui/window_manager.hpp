@@ -48,7 +48,6 @@ private:
     void run();
     bool _is_running;
     std::unique_ptr<std::thread> _thread;
-    std::shared_ptr<sf::RenderWindow> _window;
     std::map<std::string, std::unique_ptr<layer_rect>> _rect_layers;
     std::map<std::string, std::unique_ptr<layer_text>> _text_layers;
 };

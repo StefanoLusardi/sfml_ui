@@ -1,5 +1,6 @@
 #include <ui/window_manager.hpp>
 #include <future>
+#include "SFML/Window/VideoMode.hpp"
 #include "layer_rect.hpp"
 #include "layer_text.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -15,7 +16,6 @@ window_manager::window_manager()
 
 window_manager::~window_manager()
 {
-    // _window->close();
 }
 
 bool window_manager::start()
@@ -24,23 +24,11 @@ bool window_manager::start()
         return false;
 
     _is_running = true;
-
-    std::promise<void> is_window_created;
-    std::future<void> wait_for_window_created = is_window_created.get_future();
-
-    _thread = std::make_unique<std::thread>([this, &is_window_created]
+    _thread = std::make_unique<std::thread>([this]
     {
-        _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 600), "SFML UI");
-        _window->setVerticalSyncEnabled(true);
-        is_window_created.set_value();
-
         run();
-
-        _window->close();
-        _window.reset();
     });
     
-    wait_for_window_created.wait();
     return true;
 }
 
@@ -62,6 +50,9 @@ bool window_manager::is_running() const
 
 void window_manager::run()
 {
+    auto _window = std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "SFML UI");
+    _window->setVerticalSyncEnabled(true);
+
     while (_is_running)
     {
         sf::Event event;
@@ -74,18 +65,31 @@ void window_manager::run()
         _window->clear(sf::Color::Blue);
 
         for (auto&&[layer_name, layer] : _rect_layers)
-            layer->draw(_window);
+        {
+            for(auto& item : layer->get_items())
+            {
+                _window->draw(*item);
+            }
+        }
 
         for (auto&&[layer_name, layer] : _text_layers)
-            layer->draw(_window);
+        {
+            for(auto& item : layer->get_items())
+            {
+                _window->draw(*item);
+            }
+        }
 
         _window->display();
     }
+
+    _window->close();
 }
 
 std::tuple<unsigned int, unsigned int> window_manager::get_size() const
 {
-    auto&& [w, h] = _window->getSize();
+    auto w = sf::VideoMode::getDesktopMode().width;
+    auto h = sf::VideoMode::getDesktopMode().height;
     return {w, h};
 }
 
