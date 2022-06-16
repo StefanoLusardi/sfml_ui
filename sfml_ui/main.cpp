@@ -2,5 +2,6 @@
 
 int main(int argc, char** argv)
 {
-	return core::engine::exec(argc, argv);
+    core::engine e;
+    return e.run(argc, argv);
 }

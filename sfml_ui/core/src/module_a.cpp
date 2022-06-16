@@ -41,7 +41,7 @@ void module_a::run()
 
     while(_is_running)
     {
-        std::this_thread::sleep_for(250ms);
+        std::this_thread::sleep_for(50ms);
 
         _rect.x += next();
         _rect.y += next();

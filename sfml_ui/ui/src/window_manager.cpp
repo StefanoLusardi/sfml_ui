@@ -1,4 +1,5 @@
 #include <ui/window_manager.hpp>
+#include <future>
 #include "layer_rect.hpp"
 #include "layer_text.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -7,14 +8,14 @@
 namespace ui
 {
 window_manager::window_manager()
+: _is_running{ false }
 {
-    _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 600), "SFML UI");
-    _window->setVerticalSyncEnabled(true);
+
 }
 
 window_manager::~window_manager()
 {
-    _window->close();
+    // _window->close();
 }
 
 bool window_manager::start()
@@ -23,7 +24,23 @@ bool window_manager::start()
         return false;
 
     _is_running = true;
-    _thread = std::make_unique<std::thread>([this] { run(); });
+
+    std::promise<void> is_window_created;
+    std::future<void> wait_for_window_created = is_window_created.get_future();
+
+    _thread = std::make_unique<std::thread>([this, &is_window_created]
+    {
+        _window = std::make_shared<sf::RenderWindow>(sf::VideoMode(800, 600), "SFML UI");
+        _window->setVerticalSyncEnabled(true);
+        is_window_created.set_value();
+
+        run();
+
+        _window->close();
+        _window.reset();
+    });
+    
+    wait_for_window_created.wait();
     return true;
 }
 
@@ -45,9 +62,9 @@ bool window_manager::is_running() const
 
 void window_manager::run()
 {
-    sf::Event event;
     while (_is_running)
     {
+        sf::Event event;
         while (_window->pollEvent(event))
         {
             if (event.type == sf::Event::Closed)

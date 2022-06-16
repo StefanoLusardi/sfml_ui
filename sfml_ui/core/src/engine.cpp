@@ -27,19 +27,13 @@ engine::~engine()
 {
 }
 
-int engine::exec(int argc, char** argv)
-{
-    engine e;
-    return e.run();
-}
-
-int engine::run()
+int engine::run(int argc, char** argv)
 {
     auto& logger = Poco::Logger::get(core::logger_name);
     logger.information("core::engine");
 
-    _modules.emplace("module_a", std::make_unique<core::module_a>());
-    _modules.emplace("module_b", std::make_unique<core::module_b>());
+    _modules.emplace("module_a", std::make_shared<core::module_a>());
+    _modules.emplace("module_b", std::make_shared<core::module_b>());
 
     bool ui_enabled = true;
     if (ui_enabled)
@@ -57,7 +51,7 @@ int engine::run()
     {
         m->set_window_manager(_ui);
         m->start();
-    }    
+    }
 
     while(_ui->is_running())
     {
